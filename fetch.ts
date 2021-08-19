@@ -23,9 +23,14 @@ export function fetch(path: string, options?: FetchOptions): Promise<any> {
 
   const args = ["-s"].concat(parseOptions(options));
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const response = popen(`curl ${args.join(" ")} ${path}`, "r");
-    resolve(response);
+
+    if (response === null) {
+      reject("No response emitted");
+    } else {
+      resolve(response.readAsString());
+    }
   });
 }
 
